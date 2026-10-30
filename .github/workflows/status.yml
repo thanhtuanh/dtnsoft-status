@@ -1,0 +1,21 @@
+name: status
+# Alle 15 Minuten von außen (GitHub, nicht Hetzner): erreicht der Mensch die Dienste so wie erwartet?
+# Rot → GitHub schickt die Fehler-Mail an den Repo-Besitzer (Settings → Notifications → Actions: „Only notify for failed workflows“).
+on:
+  schedule: [{ cron: "*/15 * * * *" }]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: write   # nur für „wach halten“ unten
+jobs:
+  pruefen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./pruefen.sh
+      # GitHub schaltet Zeitpläne in öffentlichen Repos nach 60 Tagen ohne Aktivität ab — dieser Aufruf hält sie aktiv (kein Commit nötig).
+      - name: wach halten
+        if: always()
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/status.yml/enable" || true
