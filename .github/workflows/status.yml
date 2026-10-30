@@ -4,6 +4,8 @@ name: status
 on:
   schedule: [{ cron: "*/15 * * * *" }]
   workflow_dispatch:
+    inputs:
+      probe_rot: { description: "Probe-Alarm: Lauf absichtlich rot (prüft, ob die Fehler-Mail ankommt)", type: boolean, default: false }
 permissions:
   contents: read
   actions: write   # nur für „wach halten“ unten
@@ -14,6 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: ./pruefen.sh
+      - name: Probe-Alarm (nur manuell)
+        if: inputs.probe_rot
+        run: echo "::error::Probe-Alarm — absichtlich rot, Dienste sind ok"; exit 1
       # GitHub schaltet Zeitpläne in öffentlichen Repos nach 60 Tagen ohne Aktivität ab — dieser Aufruf hält sie aktiv (kein Commit nötig).
       - name: wach halten
         if: always()
