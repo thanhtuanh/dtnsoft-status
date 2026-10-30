@@ -7,7 +7,7 @@ import urllib.request
 # (URL, erwarteter Status, erwartetes Ziel nach Weiterleitungen oder None)
 ERWARTET = [
     ("https://dtnsoft.de/", 200, None), ("https://www.dtnsoft.de/", 200, None), ("https://dtnsoft.de/steuerkanzleien.html", 200, None),
-    ("https://keycloak.dtnsoft.de/realms/gpaa-v2", 200, None),
+    ("https://keycloak.dtnsoft.de/realms/gpaa", 200, None),
     ("https://bayernfisch-lieferdienst.de/", 200, None),
     ("https://office2.bayernfisch-lieferdienst.de/", 200, "https://office2.bayernfisch-lieferdienst.de/login/?next=/"),
 ]
